@@ -3,7 +3,6 @@ import Image from "next/image";
 import localFont from "next/font/local";
 import styles from "@/styles/Home.module.css";
 import { useSession,signIn,signOut } from "next-auth/react";
-import "tailwindcss";
 
 export default function Home() {
   const session = useSession();
