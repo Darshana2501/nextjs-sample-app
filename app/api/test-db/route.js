@@ -1,19 +1,21 @@
-import { connectDB } from "@/lib/mongodb";
+import clientPromise from "@/lib/mongodb";
 
 export async function GET() {
   try {
-    const client = await connectDB();
+    const client = await clientPromise;
 
     await client.db("admin").command({ ping: 1 });
 
     return Response.json({
-      message: "MongoDB connected successfully!"
+      message: "MongoDB connected successfully",
     });
   } catch (error) {
+    console.error(error);
+
     return Response.json(
       {
         message: "MongoDB connection failed",
-        error: error.message
+        error: error.message,
       },
       { status: 500 }
     );
