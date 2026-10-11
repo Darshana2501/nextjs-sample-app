@@ -1,10 +1,8 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 export default function Home() {
   const session = useSession();
-  const router = useRouter();
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
@@ -148,13 +146,6 @@ export default function Home() {
         <p className="mb-7 text-gray-500">
           You are successfully logged in.
         </p>
-
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="mb-3 w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition duration-200 hover:bg-blue-700 hover:shadow-xl active:scale-95"
-        >
-          Go to Dashboard
-        </button>
 
         {/* Original Logout Logic */}
         <button
