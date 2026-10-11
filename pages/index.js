@@ -1,17 +1,10 @@
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Home() {
   const session = useSession();
   const router = useRouter();
-
-  // Login zalyavar direct dashboard var nya
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      router.replace("/dashboard");
-    }
-  }, [session.status, router]);
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
