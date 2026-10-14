@@ -46,7 +46,8 @@ export default function Signup() {
         body: JSON.stringify({ name, mobile, email, password }),
       });
 
-      const data = await response.json();
+      // Server ne JSON nahi pathavla (crash) tari khara error dakhvaycha
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         setError(data.message || "Registration failed.");

@@ -1,14 +1,52 @@
 import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Home() {
   const session = useSession();
+  const router = useRouter();
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const passwordPattern =
     /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s])\S{8,}$/;
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError("");
+
+    if (!/^[6-9][0-9]{9}$/.test(mobile)) {
+      setError("Please enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+
+    if (!passwordPattern.test(password)) {
+      setError(
+        "Password must contain at least 8 characters, one alphabet, one number, and one special character."
+      );
+      return;
+    }
+
+    setLoading(true);
+    // Signup varun banavlelya account ne login (MongoDB madhe check hoto)
+    const result = await signIn("credentials", {
+      mobile,
+      password,
+      redirect: false,
+    });
+    setLoading(false);
+
+    if (!result?.ok) {
+      setError("Invalid mobile number or password.");
+      return;
+    }
+
+    router.push("/dashboard");
+  }
 
   // Original login logic
   if (session.data == null) {
@@ -29,28 +67,14 @@ export default function Home() {
             Please login to continue
           </p>
 
+          {error && (
+            <p role="alert" className="mb-4 rounded-lg bg-red-50 p-3 text-left text-sm text-red-700">
+              {error}
+            </p>
+          )}
+
           {/* Login Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-
-              if (!/^[6-9][0-9]{9}$/.test(mobile)) {
-                alert("Please enter a valid 10-digit Indian mobile number.");
-                return;
-              }
-
-              if (!passwordPattern.test(password)) {
-                alert(
-                  "Password must contain at least 8 characters, one alphabet, one number, and one special character."
-                );
-                return;
-              }
-
-              // Original NextAuth login logic
-              signIn( undefined,{callbackUrl: "/dashboard"});
-            }}
-            className="space-y-5 text-left"
-          >
+          <form onSubmit={handleLogin} className="space-y-5 text-left">
 
             {/* Mobile Number */}
             <div>
@@ -118,12 +142,44 @@ export default function Home() {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition duration-200 hover:bg-blue-700 hover:shadow-xl active:scale-95"
+              disabled={loading}
+              className="w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition duration-200 hover:bg-blue-700 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
 
           </form>
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-sm text-gray-400">Or login with</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              className="rounded-xl border border-gray-300 px-3 py-3 font-medium transition hover:bg-gray-50"
+            >
+              Google
+            </button>
+
+            <button
+              type="button"
+              onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+              className="rounded-xl border border-gray-300 px-3 py-3 font-medium transition hover:bg-gray-50"
+            >
+              GitHub
+            </button>
+          </div>
+
+          <p className="mt-6 text-sm text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="font-semibold text-blue-600 hover:underline">
+              Sign up
+            </Link>
+          </p>
 
         </div>
       </div>
