@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 
 export default function Signup() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
@@ -54,11 +56,23 @@ export default function Signup() {
         return;
       }
 
-      setSuccess("Account created successfully! Redirecting to login...");
+      setSuccess("Account created successfully! Logging you in...");
 
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1200);
+      // Account banlyavar tyach mobile + password ne swata login karun dashboard var
+      const result = await signIn("credentials", {
+        mobile,
+        password,
+        redirect: false,
+      });
+
+      if (!result?.ok) {
+        // Account banla ahe, fakt auto-login nahi zala - login page var pathva
+        setSuccess("Account created successfully! Please login to continue.");
+        setTimeout(() => router.push("/"), 1500);
+        return;
+      }
+
+      router.push("/dashboard");
     } catch {
       setError("Unable to register. Please try again.");
     } finally {
