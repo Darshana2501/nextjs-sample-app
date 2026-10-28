@@ -14,6 +14,8 @@ export default function Home() {
 
   const passwordPattern =
     /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s])\S{8,}$/;
+  const [showPassword, setShowPassword] = useState(false);
+
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -60,11 +62,11 @@ export default function Home() {
           </div>
 
           <h1 className="mb-3 text-3xl font-bold text-gray-800">
-            Welcome
+            Welcome Back
           </h1>
 
           <p className="mb-7 text-gray-500">
-            Please login to continue
+            Sign in with your registered mobile number and password.
           </p>
 
           {error && (
@@ -105,54 +107,95 @@ export default function Home() {
             </div>
 
             {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-semibold text-gray-700"
-              >
-                Password
-              </label>
+            
+<div className="relative">
+  <input
+    id="password"
+    type={showPassword ? "text" : "password"}
+    autoComplete="current-password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    minLength={8}
+    pattern="(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s])\S{8,}"
+    title="Password must contain at least 8 characters, one alphabet, one number, and one special character."
+    placeholder="Enter your password"
+    required
+    className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+  />
 
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                minLength={8}
-                pattern="(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s])\S{8,}"
-                title="Password must contain at least 8 characters, one alphabet, one number, and one special character."
-                placeholder="Enter your password"
-                required
-                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute inset-y-0 right-0 flex cursor-pointer items-center px-4 text-gray-500 hover:text-blue-600"
+    aria-label={showPassword ? "Hide password" : "Show password"}
+    title={showPassword ? "Hide password" : "Show password"}
+  >
+    {showPassword ? (
+      // Eye-off icon
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M3 3l18 18" />
+        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+        <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c5 0 8.3 4.2 9 7-.3 1.1-1 2.3-2 3.3" />
+        <path d="M6.2 6.2C3.9 7.7 2.4 10 2 12c.7 2.8 4 7 10 7 1.2 0 2.3-.2 3.3-.6" />
+      </svg>
+    ) : (
+      // Eye icon
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    )}
+  </button>
+</div>
 
-              <p className="mt-2 text-xs leading-5 text-gray-500">
-                Password requirements:
-                <br />
-                ✓ Minimum 8 characters
-                <br />
-                ✓ At least one alphabet (A–Z)
-                <br />
-                ✓ At least one number (0–9)
-                <br />
-                ✓ At least one special character (@, #, $, etc.)
-              </p>
-            </div>
-            {/* Login Button */}
+            {/* Sign in Button */}
             <button
               type="submit"
               disabled={loading}
               className="w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition duration-200 hover:bg-blue-700 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Sign in..." : "Sign in"}
             </button>
+
+            {/* Forgot Password */}
+            <div className="mt-3 text-right">
+            <Link
+             href="/forgot-password"
+             className="text-sm text flex items-center justify-center  font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+              Forgot Password
+              </Link>
+            </div>
+
+
+   
 
           </form>
 
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-sm text-gray-400">Or login with</span>
+            <span className="text-sm text-gray-400">Or Sign in with</span>
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
@@ -200,7 +243,7 @@ export default function Home() {
         </h1>
 
         <p className="mb-7 text-gray-500">
-          You are successfully logged in.
+          You are successfully Sign in.
         </p>
 
         {/* Original Logout Logic */}
@@ -208,7 +251,7 @@ export default function Home() {
           onClick={() => signOut()}
           className="w-full rounded-xl bg-red-500 px-6 py-3 font-semibold text-white shadow-lg transition duration-200 hover:bg-red-600 hover:shadow-xl active:scale-95"
         >
-          Logout
+          Sign out
         </button>
 
       </div>
